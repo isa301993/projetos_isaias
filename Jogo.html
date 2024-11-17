@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAULINA GAME</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #87CEEB;
+            overflow: hidden;
+            margin: 0;
+        }
+        .game-container {
+            position: relative;
+            width: 800px;
+            height: 400px;
+            background-color: #7CFC00;
+            overflow: hidden;
+            background-image: url('nuvens.jpg');
+            background-size: cover;
+        }
+        .character-selection {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .character {
+            border: 2px solid transparent;
+            padding: 10px;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        .character img {
+            width: 60px;
+            height: 100px;
+        }
+        .character.selected {
+            border-color: #ff0000;
+        }
+        .mario, .luigi, .spike {
+            position: absolute;
+            bottom: 0;
+            left: 50px;
+            width: 60px;
+            height: 100px;
+            background-size: cover;
+            transition: bottom 0.3s;
+            display: none;
+        }
+        .spike {
+            background-image: url('spike.jpg');
+        }
+        .mario {
+            background-image: url('mario.png');
+        }
+        .luigi {
+            background-image: url('luigi.jpg');
+        }
+        .jump {
+            bottom: 110px !important; /* Altura do pulo */
+        }
+        .pipe {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 50px;
+            height: 100px;
+            background-color: red;
+            animation: movePipe 1s linear infinite;
+        }
+        @keyframes movePipe {
+            from {
+                right: -50px;
+            }
+            to {
+                right: 100%;
+            }
+        }
+        .score {
+            position: absolute;
+            top: 5px;
+            left: 0px;
+            font-size: 40px;
+            color: black;
+            text-shadow: 25px;
+            outline: #7CFC00;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+        .p1 {
+            font-size: 45px;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            color: rgb(229, 226, 49);
+            margin-top: 45px;
+            margin-left: 0px;
+            outline: auto;
+            outline-color: black;
+            text-shadow: 8px;
+        }
+    </style>
+    
+</head>
+<body>
+    <div class="character-selection">
+        <div class="character" onclick="selectCharacter('mario')">
+            <img src="mario.png" alt="Mario">
+        </div>
+        <div class="character" onclick="selectCharacter('luigi')">
+            <img src="luigi.jpg" alt="Luigi">
+        </div>
+        <div class="character" onclick="selectCharacter('spike')">
+            <img src="spike.jpg" alt="Spike">
+        </div>    
+    </div>
+    <div class="game-container">
+        <h3 class="p1">PAULINA GAME S2 S2 S2 S2</h3>
+        <div class="score">Pontuação: 0</div>
+        <div class="mario"></div>
+        <div class="luigi"></div>
+        <div class="spike"></div>
+        <div class="pipe"></div>
+    </div>
+    <audio id="jump-sound" src="jump.mp3"></audio>
+    <audio id="gameover-sound" src="gameover.mp3"></audio>
+    <script>
+        let score = 0;
+        const scoreElement = document.querySelector('.score');
+        const jumpSound = document.getElementById('jump-sound');
+        const gameoverSound = document.getElementById('gameover-sound');
+        let selectedCharacter = null;
+
+        function selectCharacter(character) {
+            const characters = document.querySelectorAll('.character');
+            characters.forEach(char => char.classList.remove('selected'));
+            document.querySelector(`.${character}`).style.display = 'block';
+            selectedCharacter = character;
+            document.querySelector(`.character[onclick="selectCharacter('${character}')"]`).classList.add('selected');
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.code === 'Space' && selectedCharacter) {
+                jump();
+            }
+        });
+
+        function jump() {
+            const character = document.querySelector(`.${selectedCharacter}`);
+            if (!character.classList.contains('jump')) {
+                character.classList.add('jump');
+                jumpSound.play(); // Toca o som de pulo
+                setTimeout(function() {
+                    character.classList.remove('jump');
+                }, 500); // Duração do pulo
+            }
+        }
+
+        function updateScore() {
+            score++;
+            scoreElement.textContent = `Pontuação: ${score}`;
+        }
+
+        function checkCollision() {
+            const character = document.querySelector(`.${selectedCharacter}`);
+            const pipe = document.querySelector('.pipe');
+            const characterRect = character.getBoundingClientRect();
+            const pipeRect = pipe.getBoundingClientRect();
+
+            if (
+                characterRect.right > pipeRect.left &&
+                characterRect.left < pipeRect.right &&
+                characterRect.bottom > pipeRect.top
+            ) {
+                gameOver();
+            }
+        }
+
+        function gameOver() {
+            gameoverSound.play(); // Toca o som de game over
+            alert('Game Over!');
+            score = 0; // Reinicia a pontuação
+            scoreElement.textContent = `Pontuação: ${score}`;
+        }
+
+        setInterval(function() {
+            if (selectedCharacter) {
+                updateScore();
+                checkCollision();
+            }
+        }, 100); // Verifica colisões e atualiza a pontuação a cada 100ms
+    </script>
+   
+</body>
+</html>

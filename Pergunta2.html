@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responda</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: brown;
+            font-family: sans-serif;
+        }
+        .container {
+            text-align: center;
+            background-color: lightgreen;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .buttons {
+            margin-top: 10px;
+            position: relative;
+            height: 100px; /* Ajuste a altura conforme necessário */
+        }
+        .buttons button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 35px;
+            cursor: pointer;
+        }
+        .buttons .yes {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 25px;
+        }
+        .buttons .no {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            position: absolute;
+            font-size: 25px;
+        }
+    </style>
+    <script>
+        function moveButton() {
+            const button = document.querySelector('.no');
+            const container = document.querySelector('.buttons');
+            const containerRect = container.getBoundingClientRect();
+            const buttonRect = button.getBoundingClientRect();
+            
+            const newTop = Math.random() * (containerRect.height - buttonRect.height);
+            const newLeft = Math.random() * (containerRect.width - buttonRect.width);
+            
+            button.style.top = `${newTop}px`;
+            button.style.left = `${newLeft}px`;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Voçê quer namorar comigo ? ? ? ? ?</h1>
+        <div class="buttons">
+            <button class="yes" onclick="window.location.href='https://www.youtube.com/watch?v=Yo2GdogCAZc'">Sim</button>
+            <button class="no" onmouseover="moveButton()">Não</button>
+        </div>
+    </div>
+    
+</body>
+</html>
